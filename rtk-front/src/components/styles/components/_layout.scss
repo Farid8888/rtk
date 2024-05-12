@@ -1,0 +1,31 @@
+
+.l{
+ background-color: $primary;
+}
+
+button{
+    @include Head(pink,color);
+    cursor: pointer;
+    &:hover{
+        @include Head(#ffffff,background-color)
+    }
+}
+
+.lay{
+    background-color: $primary;
+}
+
+nav h1{
+color: #ffffff;
+}
+
+.lay a{
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.lay a:hover,
+.lay a.active{
+    color: gold;
+}
+

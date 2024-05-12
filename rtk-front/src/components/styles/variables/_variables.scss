@@ -1,0 +1,10 @@
+$primary:#90ca;
+$btn:yellow;
+
+
+
+
+@mixin Head($col,$key){
+#{$key}:$col;
+
+}
