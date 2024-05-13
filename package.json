@@ -1,0 +1,17 @@
+{
+  "name": "rtk",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "install": "concurrently \"npm install --prefix ./rtk-front\" \"npm install --prefix ./rtk-back\"",
+    "dev":"concurrently \"npm run dev --prefix ./rtk-front\" \"npm run dev --prefix ./rtk-back\""
+
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
