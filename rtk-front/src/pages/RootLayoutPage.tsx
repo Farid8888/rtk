@@ -7,7 +7,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const RootLayoutPage = () => {
   const status = useAppSelector((state) => state.rootStore.status);
-console.log(status.status?.status)
   React.useEffect(()=>{
     if (status.status?.status === "ERROR") toast.error(`${status.status.message}`,{
       position: "top-right",

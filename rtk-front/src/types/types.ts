@@ -21,3 +21,8 @@ export type STATUS={
     status:string,
     message:string,
 }
+
+export type ERR={
+    title:string | boolean,
+    body:string | boolean
+}
