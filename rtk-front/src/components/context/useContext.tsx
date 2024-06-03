@@ -1,19 +1,19 @@
-import { createContext, useState,useEffect } from "react";
-import {useAppDispatch,useAppSelector} from '../../store/store'
-import {fetchPosts} from '../../store/actions/actions'
-import { POSTS,POST } from "../../types/types";
+import { createContext} from "react";
+import { POSTS} from "../../types/types";
+import {useFetchPostsHook} from '../../createAsyncThunk(store)/hooks'
 
 export const Context = createContext<POSTS>({
   posts:[],
+  isLoading:false,
+  isSuccess:false,
+  isError:false,
+  error:{}
 });
 
 const ProviderContext = ({children}:{children:React.ReactNode}) => {
-  const posts = useAppSelector(state=>state.rootStore.posts.posts)
-  const dispatch = useAppDispatch()
-  useEffect(() => {
-    dispatch(fetchPosts());
-  }, [dispatch]);
-  return <Context.Provider value={{ posts:posts }}>
+
+  const {data,isLoading,isSuccess,error,isError} = useFetchPostsHook({id:''})
+  return <Context.Provider value={{ posts:data,isLoading:isLoading,isSuccess:isSuccess,error:error,isError:isError}}>
      {children}
   </Context.Provider>;
 };

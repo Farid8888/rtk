@@ -1,12 +1,23 @@
+import {useContext} from 'react'
 import { useNavigate } from "react-router";
-import { POST } from "../../types/types";
-import {useGetAllPostsQuery,useDeletePostsMutation} from '../../store/services/postService'
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
+import {Context} from '../context/useContext'
+import {deletePost,getStatus} from '../../createAsyncThunk(store)/postSlice'
+import {useAppDispatch, useAppSelector} from '../../createAsyncThunk(store)/store'
 
 const Posts = () => {
   const navigate = useNavigate();
-const {data,isLoading} = useGetAllPostsQuery('')
-const [removePost] = useDeletePostsMutation()
+  const data = useContext(Context).posts
+  const isLoading =useContext(Context).isLoading
+  const error = useContext(Context).error as {fetchErr?:string | undefined}
+  const dispatch = useAppDispatch()
+
+  console.log(error,data)
+  if(error.fetchErr){
+    return <div className='d-flex align-content-center justify-content-center vh-100 flex-wrap text-danger'>{error.fetchErr}</div>
+  }
+const status = useAppSelector(state=>getStatus(state,'patch'))
+
   const postHandler = (id: string) => {
     navigate(`/post/${id}`);
   };
@@ -33,18 +44,16 @@ if(isLoading){
       {data?.map((post) => {
         return (
           <div key={post.id} className="w-50 d-flex gap-3 mb-3">
-            <p
+            <div
               className="m-0 btn btn-danger  text-start w-100 rounded-3 py-3 px-5"
               onClick={() => postHandler(post.id)}
             >
-              {post.title}
-            </p>
+              {status ==='pending' ?  <LoadingSpinner st={{'fontSize':'1.2rem',"height":'1.3rem',"width":"1.3rem"}}/>  :post.title}
+            </div>
             <button
               type="button"
               className="btn btn-dark"
-              onClick={()=>{
-                removePost(post.id)
-              }}
+              onClick={()=>dispatch(deletePost(post.id))}
             >
               DELETE
             </button>

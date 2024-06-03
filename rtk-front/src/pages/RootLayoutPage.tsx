@@ -1,14 +1,17 @@
 import React from 'react'
 import Layout from '../components/Layout/Layout'
 import {Outlet} from 'react-router'
-import {useAppSelector} from '../store/store'
+import {Context} from '../components/context/useContext'
 import { ToastContainer, toast,Bounce } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { useAppSelector } from '../createAsyncThunk(store)/store'
 
 const RootLayoutPage = () => {
-  const status = useAppSelector((state) => state.rootStore.status);
+  const status = React.useContext(Context)
+  const errData = useAppSelector(state=>state.posts.errorData)
+console.log(status)
   React.useEffect(()=>{
-    if (status.status?.status === "ERROR") toast.error(`${status.status.message}`,{
+    if (status.isError) toast.error(`${errData ? 'Error decalred': status.error.message}`,{
       position: "top-right",
 autoClose: 5000,
 hideProgressBar: false,
@@ -20,7 +23,7 @@ theme: "colored",
 transition: Bounce,
     });
 
-  },[status.status?.status])
+  },[status.error])
   return (
     <>
       <Layout/>

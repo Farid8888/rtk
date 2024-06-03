@@ -9,8 +9,18 @@ export interface POST{
     [key:string]:any
 }
 
+
+
 export type POSTS={
-    posts:POST[] 
+    posts:POST[],
+    isLoading:boolean,
+    isSuccess:boolean,
+    isError:boolean,
+    error:any
+}
+
+export type EDITPOST={
+    posts:POSTS
 }
 
 export type VAL={

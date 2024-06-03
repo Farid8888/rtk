@@ -3,7 +3,8 @@ import {RouterProvider,createBrowserRouter} from 'react-router-dom'
 import RootLayoutPage from './pages/RootLayoutPage'
 import HomePage from './pages/HomePage'
 import {Provider} from "react-redux"
-import {store} from './store/store'
+// import {store} from './store/store'
+import {store} from './createAsyncThunk(store)/store'
 import "./components/styles/app.less";
 import "./components/styles/main.scss";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -50,7 +51,7 @@ const reactRoot = ReactDOM.createRoot(
 reactRoot.render(
  
   <Provider store={store}>
-     <ProviderContext>
+      <ProviderContext>
        <RouterProvider router={router}/>
        </ProviderContext>
   </Provider>
