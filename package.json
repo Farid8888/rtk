@@ -5,13 +5,13 @@
   "main": "index.js",
   "scripts": {
     "all": "concurrently \"npm install --prefix ./rtk-front\" \"npm install --prefix ./rtk-back\"",
-    "dev":"concurrently \"npm run dev --prefix ./rtk-front\" \"npm run dev --prefix ./rtk-back\""
-
+    "dev": "concurrently \"npm run dev --prefix ./rtk-front\" \"npm run dev --prefix ./rtk-back\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "redux-saga": "^1.3.0"
   }
 }

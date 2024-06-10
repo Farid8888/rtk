@@ -50,7 +50,7 @@ router.patch('/:id',async(req,res,next)=>{
       let errors ={}
       if(validateName(body.body)) errors.body = 'Please enter the body'
      if(validateName(body.title)) errors.title = 'Please enter the title'
-     Object.keys(errors).length > 0 ? res.status(422).json({message:'Error is declared',errors:errors})
+     Object.keys(errors).length > 0 ? res.status(500).json({message:'Error is declared',errors:errors})
     : res.status(201).json({massage:"edited",posts:await editOne(id,body)})
     }catch(e){
         next(e)

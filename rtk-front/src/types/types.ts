@@ -10,7 +10,8 @@ export interface POST{
 }
 
 export type POSTS={
-    posts:POST[] 
+    posts:POST[] | null,
+    status:string | null
 }
 
 export type VAL={

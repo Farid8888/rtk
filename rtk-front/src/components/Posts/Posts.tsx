@@ -1,20 +1,25 @@
+import {useContext} from 'react'
 import { useNavigate } from "react-router";
-import { POST } from "../../types/types";
-import {useGetAllPostsQuery,useDeletePostsMutation} from '../../store/services/postService'
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
+import { Context } from '../context/useContext';
+import {useAppDispatch} from '../../redux-saga(store)/store'
+import {deletePostSaga} from '../../redux-saga(store)/reducers/postSlice'
+import { POST } from '../../types/types';
+
 
 const Posts = () => {
-  const navigate = useNavigate();
-const {data,isLoading} = useGetAllPostsQuery('')
-const [removePost] = useDeletePostsMutation()
+const navigate = useNavigate();
+const dispatch = useAppDispatch()
+const status = useContext(Context).status
+const data = useContext(Context).posts
   const postHandler = (id: string) => {
     navigate(`/post/${id}`);
   };
-if(isLoading){
+if(status === 'SEND'){
   return <div className="d-flex align-content-center justify-content-center min-vh-100 flex-wrap"><LoadingSpinner/></div>
 }
-  const editHandler = (id: any) => {
-    navigate(`/edit/${id}`);
+  const editHandler = (id: any,post:POST) => {
+    navigate(`/edit/${id}`,{state:{post:post}});
   };
 
   if (data?.length === 0) {
@@ -42,16 +47,13 @@ if(isLoading){
             <button
               type="button"
               className="btn btn-dark"
-              onClick={()=>{
-                removePost(post.id)
-              }}
-            >
+              onClick={()=>dispatch(deletePostSaga(post.id))}>
               DELETE
             </button>
             <button
               type="button"
               className="btn btn-primary"
-              onClick={() => editHandler(post.id)}
+              onClick={() => editHandler(post.id,post)}
             >
               EDIT
             </button>

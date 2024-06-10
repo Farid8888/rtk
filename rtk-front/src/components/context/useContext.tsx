@@ -1,19 +1,21 @@
-import { createContext, useState,useEffect } from "react";
-import {useAppDispatch,useAppSelector} from '../../store/store'
-import {fetchPosts} from '../../store/actions/actions'
-import { POSTS,POST } from "../../types/types";
+import { createContext,useEffect } from "react";
+import {useAppDispatch,useAppSelector} from '../../redux-saga(store)/store'
+import { POSTS} from "../../types/types";
+import {getPostsSaga} from '../../redux-saga(store)/reducers/postSlice'
 
 export const Context = createContext<POSTS>({
-  posts:[],
+  posts:null,
+  status:''
 });
 
 const ProviderContext = ({children}:{children:React.ReactNode}) => {
-  const posts = useAppSelector(state=>state.rootStore.posts.posts)
+  const posts = useAppSelector(state=>state.posts.posts)
+  const status = useAppSelector(state=>state.status.status?.status)
   const dispatch = useAppDispatch()
   useEffect(() => {
-    dispatch(fetchPosts());
+    dispatch(getPostsSaga());
   }, [dispatch]);
-  return <Context.Provider value={{ posts:posts }}>
+  return <Context.Provider value={{ posts:posts,status:status! }}>
      {children}
   </Context.Provider>;
 };
