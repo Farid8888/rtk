@@ -1,5 +1,5 @@
 import {fetchOne,fetchPosts,formHandler,removePost} from './actions'
-import {takeEvery} from 'redux-saga/effects'
+import {takeEvery,all,fork} from 'redux-saga/effects'
 
 export function* mySaga(){
     yield takeEvery('post/getPostsSaga',fetchPosts)
@@ -8,4 +8,9 @@ export function* mySaga(){
     yield takeEvery ('post/deletePostSaga',removePost)
 }
 
+// export const rootSaga = function* () {
+//     yield all([
+//       fork(mySaga),
+//     ]);
+//   };
 

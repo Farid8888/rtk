@@ -12,7 +12,7 @@ const EditPage = () => {
   return (
     <div className='p-3'>
        <IoIosArrowBack style={{cursor:'pointer'}} className='display-5 link-dark' onClick={()=>navigate(-1)}/>
-      <Form title={post.title} body={post.body}/> : <LoadingSpinner/>
+      <Form title={post.title} body={post.body}/> 
     </div>
   )
 }
