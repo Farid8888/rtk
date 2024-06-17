@@ -20,7 +20,6 @@ const statusSlice = createSlice({
             state.status = {...action.payload}
         },
         validate:(state,action:PayloadAction<VAL>)=>{
-            console.log(action)
             for(let key in state.validation){
                 state.validation ={...state.validation,[key]:action.payload[key]}
             }

@@ -11,6 +11,9 @@ import ListsPage from './pages/ListsPage'
 import PostPage from './pages/PostPage'
 import EditPage from './pages/EditPage'
 import ProviderContext from './components/context/useContext'
+import {StoreContext} from './components/context/Context(mobX)'
+import {RootStore} from './mobX(store)/RootStore'
+
 
 const router =createBrowserRouter([
   {
@@ -48,14 +51,9 @@ const reactRoot = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 )
 reactRoot.render(
- 
-  <Provider store={store}>
-     <ProviderContext>
+ <StoreContext.Provider value={new RootStore()}>
        <RouterProvider router={router}/>
-       </ProviderContext>
-  </Provider>
-
-  ,
+ </StoreContext.Provider>
 )
 
 

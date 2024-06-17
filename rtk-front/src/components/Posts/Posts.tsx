@@ -1,28 +1,23 @@
-import {useContext} from 'react'
 import { useNavigate } from "react-router";
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
-import { Context } from '../context/useContext';
-import {useAppDispatch} from '../../redux-saga(store)/store'
-import {deletePostSaga} from '../../redux-saga(store)/reducers/postSlice'
-import { POST } from '../../types/types';
+import { POST,STATUS } from '../../types/types';
 
 
-const Posts = () => {
+
+const Posts:React.FC<{posts:POST[],status:STATUS,remove:(id:any)=>{}}> = ({posts,status,remove}) => {
 const navigate = useNavigate();
-const dispatch = useAppDispatch()
-const status = useContext(Context).status
-const data = useContext(Context).posts
+
   const postHandler = (id: string) => {
     navigate(`/post/${id}`);
   };
-if(status === 'SEND'){
+if(status.status === 'SEND'){
   return <div className="d-flex align-content-center justify-content-center min-vh-100 flex-wrap"><LoadingSpinner/></div>
 }
   const editHandler = (id: any,post:POST) => {
     navigate(`/edit/${id}`,{state:{post:post}});
   };
 
-  if (data?.length === 0) {
+  if (posts.length === 0 && status.status == 'SUCCESS') {
     return (
       <div className="d-flex flex-column align-content-center justify-content-center flex-wrap min-vh-100">
         <p className="text-center">No posts added</p>
@@ -33,9 +28,12 @@ if(status === 'SEND'){
     );
   }
 
+  if(status.status === 'ERROR'){
+    return <div className='d-flex align-content-center justify-content-center vh-100 flex-wrap text-danger'>{status.message}</div>
+  }
   return (
     <div className="d-flex flex-column align-items-center m-5">
-      {data?.map((post) => {
+      {posts.map((post) => {
         return (
           <div key={post.id} className="w-50 d-flex gap-3 mb-3">
             <p
@@ -47,7 +45,7 @@ if(status === 'SEND'){
             <button
               type="button"
               className="btn btn-dark"
-              onClick={()=>dispatch(deletePostSaga(post.id))}>
+              onClick={()=>remove(post.id)}>
               DELETE
             </button>
             <button

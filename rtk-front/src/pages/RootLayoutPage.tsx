@@ -1,14 +1,15 @@
 import React from 'react'
 import Layout from '../components/Layout/Layout'
 import {Outlet} from 'react-router'
-import {useAppSelector} from '../redux-saga(store)/store'
 import { ToastContainer, toast,Bounce } from "react-toastify";
+import {useStore} from '../components/context/Context(mobX)'
+import {observer} from 'mobx-react-lite'
 import 'react-toastify/dist/ReactToastify.css';
 
-const RootLayoutPage = () => {
-  const status = useAppSelector((state) => state.status.status);
+const RootLayoutPage = observer(() => {
+  const {post:{statusState}} = useStore()
   React.useEffect(()=>{
-    if (status?.status === "ERROR") toast.error(`${status.message}`,{
+    if (statusState?.status === "ERROR") toast.error(`${statusState.message}`,{
       position: "top-right",
 autoClose: 5000,
 hideProgressBar: false,
@@ -20,7 +21,7 @@ theme: "colored",
 transition: Bounce,
     });
 
-  },[status?.status])
+  },[statusState?.status])
   return (
     <>
       <Layout/>
@@ -28,6 +29,6 @@ transition: Bounce,
       <ToastContainer />
     </>
   )
-}
+})
 
 export default RootLayoutPage
