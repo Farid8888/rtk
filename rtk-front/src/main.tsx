@@ -11,6 +11,7 @@ import ListsPage from './pages/ListsPage'
 import PostPage from './pages/PostPage'
 import EditPage from './pages/EditPage'
 import ProviderContext from './components/context/useContext'
+import {QueryClientProvider,QueryClient} from '@tanstack/react-query'
 
 const router =createBrowserRouter([
   {
@@ -43,18 +44,24 @@ const router =createBrowserRouter([
   },
 ])
 
-
+const queryClient = new QueryClient()
 const reactRoot = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 )
 reactRoot.render(
- 
+  // <Provider store={store}>
+  //    <ProviderContext>
+  //      <RouterProvider router={router}/>
+  //      </ProviderContext>
+  // </Provider>
+  
+ <QueryClientProvider client={queryClient}>
   <Provider store={store}>
      <ProviderContext>
        <RouterProvider router={router}/>
        </ProviderContext>
   </Provider>
-
+  </QueryClientProvider>
   ,
 )
 

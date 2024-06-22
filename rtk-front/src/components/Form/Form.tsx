@@ -1,15 +1,25 @@
 import React,{useState} from 'react'
-import {useAppDispatch,useAppSelector} from '../../store/store'
-import {formHandler} from '../../store/actions/actions'
-import {validate} from '../../store/reducers/statusSlice'
 import {useNavigate,useParams,useLocation} from 'react-router'
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'
 import { POST } from '../../types/types'
-
+import {useQueryClient,useMutation} from '@tanstack/react-query'
+import {postForm} from '../../store(ReactQuery)/api'
 
 
 const Form:React.FC<POST> = (props) => {
-    const dispatch = useAppDispatch()
+  const queryClient = useQueryClient()
+  const mutation = useMutation({
+    mutationFn:postForm,
+    onSuccess:()=>{
+      queryClient.invalidateQueries({queryKey:['posts']})
+    }
+  })
+  const {data}:{data?:{errors:{title:string,body:string}},isPending:any}  = mutation 
+ 
+  let err
+  if(data?.errors){
+    err = data.errors
+  }
     const navigate = useNavigate()
     const params = useParams()
     const location = useLocation()
@@ -17,38 +27,37 @@ const Form:React.FC<POST> = (props) => {
         title:props.title ? props.title : '',
         body:props.body ? props.body : ''
     })    
-   const {title:titVld,body:bodyVld} = useAppSelector(state=>state.rootStore.status.validation)
 
-
-const validation = Object.values(values).some(item=>!item)
-console.log(validation,titVld,bodyVld)
+const validation =  Object.values(values).some(item=>!item)
     const submitHandler =(e:React.FormEvent)=>{
     e.preventDefault()
    const method = !location.pathname.includes('/edit') ? 'POST' : 'PATCH'
 
-   dispatch(formHandler(values,method,params.id))
+   mutation.mutate({post:values,method:method,id:params.id})
     validation ? navigate('/') : navigate('/posts') 
     }
     const changeHandler =(e:React.FormEvent<HTMLInputElement>)=>{
        const {value,name} = e.currentTarget
-       dispatch(validate({[name]:false}))
+      if(err!) err[name] = false
+
        setValues(prevst=>{
         return {...prevst,[name]:value}
        })
     }
- 
+
+
   return (
     <div className='d-flex flex-column justify-content-center min-vh-100'>
       <form onSubmit={submitHandler} className='border container p-5 rounded-3 shadow w-50' >
       <div className='d-flex flex-column'>
         <label htmlFor='title'>Title:</label>
         <input value={values.title} className='border rounded py-1 px-2 focus-ring' id='title' name='title' onChange={changeHandler}/>
-        {titVld && <div className='text-danger'> Enter the title</div>}
+        {err?.title && <div className='text-danger'>{data?.errors.title}</div>}
         </div>
         <div className='d-flex flex-column my-3'>
         <label htmlFor='body'>Body:</label>
         <input value={values.body} className='border rounded py-1 px-2 focus-ring' id='body' name='body' onChange={changeHandler}/>
-        {bodyVld && <div className='text-danger'> Enter the body</div>}
+        {err?.body && <div className='text-danger'>{data?.errors.body}</div>}
         </div>
         <button className='btn btn-primary' type='submit'>Add</button>
       </form>

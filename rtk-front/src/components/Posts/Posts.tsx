@@ -1,18 +1,23 @@
-import { useContext } from "react";
-import { Context } from "../context/useContext";
-import { useAppDispatch, useAppSelector } from "../../store/store";
+import { useAppDispatch} from "../../store/store";
 import { removePost } from "../../store/actions/actions";
-import { useNavigate } from "react-router";
-import { POST } from "../../types/types";
+import { useNavigate} from "react-router";
+import { MESSAGE, POST } from "../../types/types";
+import {useQuery,useMutation,useQueryClient} from '@tanstack/react-query'
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import {getPosts,deletePost} from '../../store(ReactQuery)/api'
 
 
 
 const Posts = () => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const posts = useContext(Context);
-  const status = useAppSelector((state) => state.rootStore.status);
-
+  const queryClient = useQueryClient()
+  const {data:posts,error,isLoading,status:st} = useQuery<POST[] | MESSAGE >({queryKey:['posts'],queryFn:getPosts})
+  const mutation = useMutation({
+    mutationFn:deletePost,
+    onSuccess:()=>{
+      queryClient.invalidateQueries({queryKey:['posts']})
+    }
+  })
 
   const postHandler = (id: string) => {
     navigate(`/post/${id}`);
@@ -21,22 +26,22 @@ const Posts = () => {
   const editHandler = (id: any, post: POST) => {
     navigate(`/edit/${id}`, { state: { post: post } });
   };
-  if (status.status?.status === "SEND") {
+  if (isLoading && !error) {
     return (
       <div className="d-flex flex-column justify-content-center align-content-center flex-wrap  min-vh-100">
-        {status.status.message}
+          <LoadingSpinner/>
       </div>
     );
   }
 
-  // if (status.status?.status === "ERROR") {
-  //   return (
-  //     <div className="d-flex flex-column align-content-center justify-content-center flex-wrap min-vh-100">
-  //       <p className="text-center">{status.status?.message}</p>
-  //     </div>
-  //   );
-  // }
-  if (posts.posts?.length === 0) {
+  if (error || (posts as MESSAGE).message) {
+    return (
+      <div className="d-flex flex-column align-content-center justify-content-center flex-wrap min-vh-100">
+        {posts ? (posts as MESSAGE).message?.error : 'Something went wrong'}
+      </div>
+    );
+  }
+  if (!posts || (posts as POST[]).length === 0 && !isLoading) {
     return (
       <div className="d-flex flex-column align-content-center justify-content-center flex-wrap min-vh-100">
         <p className="text-center">No posts added</p>
@@ -49,7 +54,7 @@ const Posts = () => {
 
   return (
     <div className="d-flex flex-column align-items-center m-5">
-      {posts.posts?.map((post) => {
+      {(posts as POST[]).map((post) => {
         return (
           <div key={post.id} className="w-50 d-flex gap-3 mb-3">
             <p
@@ -61,7 +66,7 @@ const Posts = () => {
             <button
               type="button"
               className="btn btn-dark"
-              onClick={() => dispatch(removePost(post.id))}
+              onClick={() =>mutation.mutate(post.id)}
             >
               DELETE
             </button>
